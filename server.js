@@ -1,91 +1,149 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import bodyParser from 'body-parser';
-import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
+const baseUrl = 'https://simplifica-oficial-2.onrender.com';
 
-dotenv.config();
+const formLogin = document.getElementById('formLogin');
+const formVenda = document.getElementById('formVenda');
+const loginArea = document.getElementById('login-area');
+const appArea = document.getElementById('app-area');
+const btnLogout = document.getElementById('btnLogout');
 
-const app = express();
-const JWT_SECRET = process.env.JWT_SECRET;
-const mongoUri = process.env.MONGO_URI;
+(async () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        loginArea.style.display = 'none';
+        appArea.style.display = 'block';
+        const usuario = localStorage.getItem('usuarioLogado');
+        document.getElementById('df').value = usuario;
+    }
+})();
 
-app.use(cors({ origin: true, credentials: true }));
-app.use(bodyParser.json());
+formLogin.addEventListener('submit', async e => {
+    e.preventDefault();
 
-mongoose.connect(mongoUri)
-    .then(() => console.log("Conectado ao MongoDB"))
-    .catch(err => console.error("Erro ao conectar ao MongoDB:", err));
+    const nome = document.getElementById('loginNome').value;
+    const senha = document.getElementById('loginSenha').value;
 
-const UsuarioSchema = new mongoose.Schema({
-    nome: String,
-    senha: String
-}, { collection: 'senhas e logins' });
+    try {
+        const res = await fetch(`${baseUrl}/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, senha })
+        });
 
-const Usuario = mongoose.model('Usuario', UsuarioSchema);
+        const data = await res.json();
 
-const VendasTotaisSchema = new mongoose.Schema({
-    data: String,
-    nome: String,
-    requisicao: String,
-    valor: String,
-    vendedor: String
-}, { collection: 'vendas totais' });
+        if (res.ok && data.token) {
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('usuarioLogado', nome);
+            loginArea.style.display = 'none';
+            appArea.style.display = 'block';
+            document.getElementById('df').value = nome;
+        } else {
+            alert(data.erro || 'Usuário ou senha incorretos');
+        }
+    } catch (err) {
+        alert('Erro ao conectar com o servidor');
+    }
+});
 
-const VendasTotais = mongoose.model('vendas totais', VendasTotaisSchema);
+formVenda.addEventListener('submit', async e => {
+    e.preventDefault();
 
-function verificarToken(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) return res.status(401).json({ erro: 'Token não fornecido' });
+    const form = e.target;
+    const data = form.data.value;
+    const nome = form.nome.value;
+    const requisicao = form.requisicao.value;
+    const valor = form.valor.value;
+    const vendedor = localStorage.getItem('usuarioLogado');
+    form.vendedor.value = vendedor;
 
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-        if (err) return res.status(401).json({ erro: 'Token inválido' });
-        req.usuario = decoded;
-        next();
-    });
+    const token = localStorage.getItem("token");
+
+    try {
+        const res = await fetch(`${baseUrl}/registrar-venda`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify({ data, nome, requisicao, valor, vendedor })
+        });
+
+        const json = await res.json();
+        if (res.ok) {
+            alert("Registrado no servidor com sucesso!");
+            form.submit();
+        } else {
+            alert(json.erro || "Erro ao registrar no servidor");
+        }
+    } catch (err) {
+        alert("Erro ao conectar com o servidor");
+    }
+});
+
+btnLogout.addEventListener('click', () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('usuarioLogado');
+    loginArea.style.display = 'block';
+    appArea.style.display = 'none';
+});
+
+formVenda.addEventListener('submit', async e => {
+    e.preventDefault();
+
+    const form = e.target;
+    const vendedor = localStorage.getItem('usuarioLogado');
+    form.vendedor.value = vendedor;
+});
+
+function MenuPedidos() {
+    let man = document.getElementById("caixadepedidos");
+    man.style.marginTop = "125%";
 }
+function sair() {
+    let ss = document.getElementById("caixadepedidos");
+    ss.style.marginTop = "-150%";
+}
+const btnBuscar = document.getElementById('btnBuscar');
+const inputBusca = document.getElementById('busca');
+const resultados = document.getElementById('resultados');
 
-app.post('/login', async (req, res) => {
-    const { nome, senha } = req.body;
-
-    try {
-        const usuario = await Usuario.findOne({ nome: { $regex: new RegExp(`^${nome}$`, 'i') } });
-        if (!usuario) return res.status(404).json({ erro: "Usuário não encontrado" });
-        if (usuario.senha !== senha) return res.status(401).json({ erro: "Senha incorreta" });
-
-        const token = jwt.sign({ nome: usuario.nome }, JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token });
-    } catch (err) {
-        res.status(500).json({ erro: "Erro no servidor" });
-    }
-});
-
-app.post('/registrar-venda', verificarToken, async (req, res) => {
-    const { data, nome, requisicao, valor, vendedor } = req.body;
-
-    if (!data || !nome || !requisicao || !valor || !vendedor) {
-        return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
-    }
+btnBuscar.addEventListener('click', async () => {
+    const termo = inputBusca.value.toLowerCase();
+    const token = localStorage.getItem('token');
 
     try {
-        const novaVenda = new VendasTotais({ data, nome, requisicao, valor, vendedor });
-        await novaVenda.save();
-        res.json({ sucesso: true, mensagem: "Venda registrada com sucesso!" });
-    } catch (err) {
-        res.status(500).json({ erro: "Erro ao registrar venda" });
+        const res = await fetch(`${baseUrl}/buscar-vendas`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+
+        const vendas = await res.json();
+
+        if (Array.isArray(vendas)) {
+            const filtradas = vendas.filter(v =>
+                v.nome.toLowerCase().includes(termo) ||
+                v.requisicao.toLowerCase().includes(termo)
+            );
+
+            if (filtradas.length === 0) {
+                resultados.innerHTML = "<p>Nenhum resultado encontrado.</p>";
+                return;
+            }
+
+            resultados.innerHTML = filtradas.map(v => `
+                <div style="border:1px solid #ccc; padding:10px; margin:5px; background:white;">
+                    <strong>Data:</strong> ${v.data}<br>
+                    <strong>Nome:</strong> ${v.nome}<br>
+                    <strong>Requisição:</strong> ${v.requisicao}<br>
+                    <strong>Valor:</strong> ${v.valor}
+                </div>
+            `).join("");
+        } else {
+            resultados.innerHTML = "<p>Erro ao buscar vendas.</p>";
+        }
+    } catch {
+        resultados.innerHTML = "<p>Erro de conexão.</p>";
     }
 });
-
-app.get('/buscar-vendas', verificarToken, async (req, res) => {
-    const vendedor = req.usuario.nome;
-
-    try {
-        const vendas = await VendasTotais.find({ vendedor }).sort({ data: -1 });
-        res.json(vendas);
-    } catch (err) {
-        res.status(500).json({ erro: "Erro ao buscar vendas" });
-    }
-});
-
-app.listen(3000, () => console.log("Servidor rodando na porta 3000"));
