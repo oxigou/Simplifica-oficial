@@ -70,7 +70,7 @@ app.post('/login', async (req, res) => {
 app.post('/registrar-venda', verificarToken, async (req, res) => {
     const { data, nome, produto, valor, vendedor } = req.body;
 
-    if (!data || !nome || !requisicao || !valor || !vendedor) {
+    if (!data || !nome || !produto || !valor || !vendedor) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
 
@@ -82,6 +82,7 @@ app.post('/registrar-venda', verificarToken, async (req, res) => {
         res.status(500).json({ erro: "Erro ao registrar venda" });
     }
 });
+
 
 app.get('/buscar-vendas', verificarToken, async (req, res) => {
     const vendedor = req.usuario.nome;
