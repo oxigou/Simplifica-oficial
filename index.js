@@ -51,7 +51,7 @@ formVenda.addEventListener('submit', async e => {
     const form = e.target;
     const data = form.data.value;
     const nome = form.nome.value;
-    const requisicao = form.requisicao.value;
+    const produto = form.produto.value;
     const valor = form.valor.value;
     const vendedor = localStorage.getItem('usuarioLogado');
     form.vendedor.value = vendedor;
@@ -124,7 +124,7 @@ btnBuscar.addEventListener('click', async () => {
         if (Array.isArray(vendas)) {
             const filtradas = vendas.filter(v =>
                 v.nome.toLowerCase().includes(termo) ||
-                v.requisicao.toLowerCase().includes(termo)
+                v.produto.toLowerCase().includes(termo)
             );
 
             if (filtradas.length === 0) {
@@ -136,7 +136,7 @@ btnBuscar.addEventListener('click', async () => {
                 <div style="border:1px solid #ccc; padding:10px; margin:5px; background:white;">
                     <strong>Data:</strong> ${v.data}<br>
                     <strong>Nome:</strong> ${v.nome}<br>
-                    <strong>Requisição:</strong> ${v.requisicao}<br>
+                    <strong>Produto:</strong> ${v.produto}<br>
                     <strong>Valor:</strong> ${v.valor}
                 </div>
             `).join("");
