@@ -65,13 +65,13 @@ formVenda.addEventListener('submit', async e => {
                 "Content-Type": "application/json",
                 "Authorization": "Bearer " + token
             },
-            body: JSON.stringify({ data, nome, requisicao, valor, vendedor })
+            body: JSON.stringify({ data, nome, produto, valor, vendedor })
         });
 
         const json = await res.json();
         if (res.ok) {
             alert("Registrado no servidor com sucesso!");
-            form.submit();
+            // form.submit(); // Removido para evitar redirecionamento
         } else {
             alert(json.erro || "Erro ao registrar no servidor");
         }
@@ -87,14 +87,6 @@ btnLogout.addEventListener('click', () => {
     appArea.style.display = 'none';
 });
 
-formVenda.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const form = e.target;
-    const vendedor = localStorage.getItem('usuarioLogado');
-    form.vendedor.value = vendedor;
-});
-
 function MenuPedidos() {
     let man = document.getElementById("caixadepedidos");
     man.style.marginTop = "125%";
@@ -103,6 +95,7 @@ function sair() {
     let ss = document.getElementById("caixadepedidos");
     ss.style.marginTop = "-150%";
 }
+
 const btnBuscar = document.getElementById('btnBuscar');
 const inputBusca = document.getElementById('busca');
 const resultados = document.getElementById('resultados');
