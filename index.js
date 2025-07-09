@@ -1,3 +1,5 @@
+const BASE_URL = 'https://simplifica-oficial-2.onrender.com';
+
 const formLogin = document.getElementById('formLogin');
 const formVenda = document.getElementById('formVenda');
 const loginArea = document.getElementById('login-area');
@@ -21,7 +23,7 @@ formLogin.addEventListener('submit', async e => {
     const senha = document.getElementById('loginSenha').value;
 
     try {
-        const res = await fetch('http://localhost:3000/login', {
+        const res = await fetch(`${BASE_URL}/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nome, senha })
@@ -57,7 +59,7 @@ formVenda.addEventListener('submit', async e => {
     const token = localStorage.getItem("token");
 
     try {
-        const res = await fetch("http://localhost:3000/registrar-venda", {
+        const res = await fetch(`${BASE_URL}/registrar-venda`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -85,8 +87,6 @@ btnLogout.addEventListener('click', () => {
     appArea.style.display = 'none';
 });
 
-
-
 formVenda.addEventListener('submit', async e => {
     e.preventDefault();
 
@@ -112,7 +112,7 @@ btnBuscar.addEventListener('click', async () => {
     const token = localStorage.getItem('token');
 
     try {
-        const res = await fetch('http://localhost:3000/buscar-vendas', {
+        const res = await fetch(`${BASE_URL}/buscar-vendas`, {
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + token
