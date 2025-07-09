@@ -1,4 +1,3 @@
-const baseUrl = 'https://simplifica-oficial-2.onrender.com';
 
 const formLogin = document.getElementById('formLogin');
 const formVenda = document.getElementById('formVenda');
