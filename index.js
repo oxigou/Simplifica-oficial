@@ -1,3 +1,4 @@
+const baseUrl = "https://simplifica-oficial-7.onrender.com";
 formVenda.addEventListener('submit', async e => {
     e.preventDefault();
 
