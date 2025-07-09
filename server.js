@@ -11,7 +11,11 @@ const app = express();
 const JWT_SECRET = process.env.JWT_SECRET;
 const mongoUri = process.env.MONGO_URI;
 
-app.use(cors({ origin: true, credentials: true }));
+app.use(cors({
+    origin: 'https://oxigou.github.io',
+    credentials: true
+}));
+
 app.use(bodyParser.json());
 
 mongoose.connect(mongoUri)
