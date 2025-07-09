@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    min-height: 100vh;
+    background: linear-gradient(rgb(16, 16, 19), rgb(30, 24, 80));
+}
+
+h1 {
+    color: white;
+    font-size: 100px;
+    margin-left: 35%;
+}
+
+#formVenda {
+    text-align: right;
+    margin-top: 16%;
+    margin-right: 5%;
+
+}
+
+#data {
+    width: 23%;
+    font-size: 50px;
+
+}
+
+#nome {
+    width: 23%;
+    font-size: 50px;
+}
+
+#requisicao {
+    width: 23%;
+    font-size: 50px;
+}
+
+#valor {
+    width: 23%;
+    font-size: 50px;
+}
+
+
+#caixadepedidos {
+    transition: 0.5s;
+}
+
+#btnLogout {
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+#login-area {
+    align-items: center;
+    text-align: center;
+}
+
+#loginNome {
+    font-size: 25px;
+}
+
+#loginSenha {
+    font-size: 25px;
+}
+
+#rr {
+    width: 900px;
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: white;
+    position: absolute;
+    width: 800px;
+    margin-left: 30%;
+    margin-top: -150%;
+
+}

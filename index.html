@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Simplificador</title>
+    <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+
+    <div id="login-area"
+        style="margin-top: 12%;background: linear-gradient(45deg, black, rgb(3, 3, 88),rgb(46, 46, 161),rgb(117, 107, 209));display: inline-block;height: 500px;margin-left: 40%;width: 500px;border-radius: 20%;">
+        <h2 style="color: white;font-size: 100px;text-align: center;display: flex;justify-content: center;">Login</h2>
+        <form id="formLogin" style="margin-top: -2%;">
+            <input style="height: 50px;width: 400px;margin-left: 0;margin-right: 0;;" type="text" id="loginNome"
+                placeholder="Nome de usuário" required /><br>
+            <input style="width: 400px;height: 50px;" type="password" id="loginSenha" placeholder="Senha"
+                required /><br>
+            <button style="height: 25px;width: 408px;margin-left: 0;margin-right: 0;" type="submit">Entrar</button>
+        </form>
+    </div>
+
+    <div id="app-area" style="display:none;">
+        <h1>Simplifica</h1>
+        <form id="formVenda"
+            action="https://script.google.com/macros/s/AKfycbwC-8AM_SGj92d3LfvcI6kR33H1Vk5yDtBSCsOty2S_5EwQY0bGFODLRf8MYsQIYeiliA/exec"
+            method="POST">
+            <input id="data" name="data" placeholder="DATA" type="text" required>
+            <input id="nome" name="nome" type="text" placeholder="NOME" required>
+            <input id="requisicao" name="requisicao" type="text" placeholder="REQUISICAO" required>
+            <input id="valor" name="valor" type="text" placeholder="VALOR" required>
+            <input id="df" name="vendedor" type="hidden" />
+
+            <button id="envi" type="submit">Registrar Venda</button>
+        </form>
+
+
+        <div id="pedidos">
+            <img src="imagens/lista (2).png" width="150px"
+                style="position: fixed;top: 0;right: 0;background: rgb(16, 207, 41);">
+        </div>
+
+        <div id="caixadepedidos" style="background: green; text-align: center;">
+            <div id="rr" style="background: green;">
+                <input style="font-size: 30px;" type="text" id="busca" placeholder="Pesquisar por nome do cliente" />
+                <button style="font-size: 25px;" id="btnBuscar">🔍 Buscar</button>
+                <button style="background: red;margin-left: 97.5%;" onclick=" sair()" id="fechar">X
+                </button>
+                <div id="resultados">
+                </div>
+            </div>
+        </div>
+
+
+        <script src="index2.js"></script>
+        <button id="mm" style="position: fixed;top: 0%; right: 0%; width: 150px;height: 150px;opacity: 0;"
+            onclick="MenuPedidos()">botao</button>
+
+        <button style="font-size: 30px;" id="btnLogout">Voltar</button>
+    </div>
+
+    <script src="index.js"></script>
+</body>
+
+</html>
