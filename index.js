@@ -1,3 +1,4 @@
+const baseUrl = 'https://simplifica-oficial-5.onrender.com';
 
 const formLogin = document.getElementById('formLogin');
 const formVenda = document.getElementById('formVenda');
@@ -69,10 +70,9 @@ formVenda.addEventListener('submit', async e => {
 
         const json = await res.json();
         if (res.ok) {
-            alert("Registrado no servidor com sucesso!");
-            // form.submit(); // Removido para evitar redirecionamento
+            alert("Venda registrada com sucesso!");
         } else {
-            alert(json.erro || "Erro ao registrar no servidor");
+            alert(json.erro || "Erro ao registrar a venda");
         }
     } catch (err) {
         alert("Erro ao conectar com o servidor");
@@ -84,58 +84,4 @@ btnLogout.addEventListener('click', () => {
     localStorage.removeItem('usuarioLogado');
     loginArea.style.display = 'block';
     appArea.style.display = 'none';
-});
-
-function MenuPedidos() {
-    let man = document.getElementById("caixadepedidos");
-    man.style.marginTop = "125%";
-}
-function sair() {
-    let ss = document.getElementById("caixadepedidos");
-    ss.style.marginTop = "-150%";
-}
-
-const btnBuscar = document.getElementById('btnBuscar');
-const inputBusca = document.getElementById('busca');
-const resultados = document.getElementById('resultados');
-
-btnBuscar.addEventListener('click', async () => {
-    const termo = inputBusca.value.toLowerCase();
-    const token = localStorage.getItem('token');
-
-    try {
-        const res = await fetch(`${baseUrl}/buscar-vendas`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + token
-            }
-        });
-
-        const vendas = await res.json();
-
-        if (Array.isArray(vendas)) {
-            const filtradas = vendas.filter(v =>
-                v.nome.toLowerCase().includes(termo) ||
-                v.produto.toLowerCase().includes(termo)
-            );
-
-            if (filtradas.length === 0) {
-                resultados.innerHTML = "<p>Nenhum resultado encontrado.</p>";
-                return;
-            }
-
-            resultados.innerHTML = filtradas.map(v => `
-                <div style="border:1px solid #ccc; padding:10px; margin:5px; background:white;">
-                    <strong>Data:</strong> ${v.data}<br>
-                    <strong>Nome:</strong> ${v.nome}<br>
-                    <strong>Produto:</strong> ${v.produto}<br>
-                    <strong>Valor:</strong> ${v.valor}
-                </div>
-            `).join("");
-        } else {
-            resultados.innerHTML = "<p>Erro ao buscar vendas.</p>";
-        }
-    } catch {
-        resultados.innerHTML = "<p>Erro de conexão.</p>";
-    }
 });
