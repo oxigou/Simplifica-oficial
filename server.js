@@ -34,7 +34,7 @@ const Usuario = mongoose.model('Usuario', UsuarioSchema);
 const VendasTotaisSchema = new mongoose.Schema({
     data: String,
     nome: String,
-    requisicao: String,
+    produto: String,
     valor: String,
     vendedor: String
 }, { collection: 'vendas totais' });
@@ -68,14 +68,14 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/registrar-venda', verificarToken, async (req, res) => {
-    const { data, nome, requisicao, valor, vendedor } = req.body;
+    const { data, nome, produto, valor, vendedor } = req.body;
 
     if (!data || !nome || !requisicao || !valor || !vendedor) {
         return res.status(400).json({ erro: 'Todos os campos são obrigatórios' });
     }
 
     try {
-        const novaVenda = new VendasTotais({ data, nome, requisicao, valor, vendedor });
+        const novaVenda = new VendasTotais({ data, nome, produto, valor, vendedor });
         await novaVenda.save();
         res.json({ sucesso: true, mensagem: "Venda registrada com sucesso!" });
     } catch (err) {
