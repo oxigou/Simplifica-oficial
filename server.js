@@ -15,6 +15,8 @@ app.use(cors({
     origin: 'https://oxigou.github.io',
     credentials: true
 }));
+app.options('*', cors());
+
 
 app.use(bodyParser.json());
 
