@@ -1,50 +1,3 @@
-const baseUrl = 'https://simplifica-oficial-5.onrender.com';
-
-const formLogin = document.getElementById('formLogin');
-const formVenda = document.getElementById('formVenda');
-const loginArea = document.getElementById('login-area');
-const appArea = document.getElementById('app-area');
-const btnLogout = document.getElementById('btnLogout');
-
-(async () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        loginArea.style.display = 'none';
-        appArea.style.display = 'block';
-        const usuario = localStorage.getItem('usuarioLogado');
-        document.getElementById('df').value = usuario;
-    }
-})();
-
-formLogin.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const nome = document.getElementById('loginNome').value;
-    const senha = document.getElementById('loginSenha').value;
-
-    try {
-        const res = await fetch(`${baseUrl}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nome, senha })
-        });
-
-        const data = await res.json();
-
-        if (res.ok && data.token) {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('usuarioLogado', nome);
-            loginArea.style.display = 'none';
-            appArea.style.display = 'block';
-            document.getElementById('df').value = nome;
-        } else {
-            alert(data.erro || 'Usuário ou senha incorretos');
-        }
-    } catch (err) {
-        alert('Erro ao conectar com o servidor');
-    }
-});
-
 formVenda.addEventListener('submit', async e => {
     e.preventDefault();
 
@@ -59,6 +12,7 @@ formVenda.addEventListener('submit', async e => {
     const token = localStorage.getItem("token");
 
     try {
+        // Envia para seu backend primeiro
         const res = await fetch(`${baseUrl}/registrar-venda`, {
             method: "POST",
             headers: {
@@ -70,18 +24,14 @@ formVenda.addEventListener('submit', async e => {
 
         const json = await res.json();
         if (res.ok) {
-            alert("Venda registrada com sucesso!");
+            alert("Registrado no servidor com sucesso!");
+
+            // Agora envia para o Google Sheets (submit do formulário normal)
+            form.submit();
         } else {
-            alert(json.erro || "Erro ao registrar a venda");
+            alert(json.erro || "Erro ao registrar no servidor");
         }
     } catch (err) {
         alert("Erro ao conectar com o servidor");
     }
-});
-
-btnLogout.addEventListener('click', () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuarioLogado');
-    loginArea.style.display = 'block';
-    appArea.style.display = 'none';
 });
